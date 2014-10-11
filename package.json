@@ -1,0 +1,25 @@
+{
+  "name": "Diandian",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "make test"
+  },
+  "dependencies": {
+      "smartcore": "0.3.1"
+    , "node-zookeeper-client":"0.2.1"
+    , "socket.io": "*"
+    , "socket.io-client": "*"
+  },
+  "devDependencies": {
+    "less": "1.5.0",
+    "csv": "0.3.6",
+    "supertest": "*",
+    "should": "*",
+    "mocha": "*",
+    "rewire": "*",
+    "jscover": "*",
+    "pedding": "*",
+    "mm": "*"
+  }
+}

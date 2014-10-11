@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title><%= title %></title>
+  <% include common/required.html %>
+  <link href="/stylesheets/diandian.css" rel="stylesheet" media="screen">
+  <script type="text/javascript" src="/javascripts/menu_item_list.js"></script>
+  <script  type="text/javascript">
+    var i18n = {
+      "html.label.item.food": "<%=i('html.label.item.food') %>"
+      , "html.label.item.dish": "<%=i('html.label.item.dish') %>"
+      , "html.label.item.drinks": "<%=i('html.label.item.drinks') %>"
+      , "html.label.item.ad": "<%=i('html.label.item.ad') %>"
+      , "html.label.item.seafood": "<%=i('html.label.item.seafood') %>"
+      , "html.label.item.info.yes": "<%=i('html.label.item.info.yes') %>"
+      , "html.label.item.info.no": "<%=i('html.label.item.info.no') %>"
+      ,"js.common.delete.confirm":"<%=i('js.common.delete.confirm') %>"
+      ,"js.common.delete.success":"<%=i('js.common.delete.success') %>"
+      ,"js.common.dialog.ok":"<%=i('js.common.dialog.ok') %>"
+      ,"js.common.dialog.cancel":"<%=i('js.common.dialog.cancel') %>"
+      ,"js.common.search.error":"<%=i('js.common.search.error') %>"
+    };
+  </script>
+</head>
+<body>
+
+<% include common/navbar.html %>
+
+<div class="main-container container-fluid">
+  <% include common/sidebar.html %>
+
+  <div class="main-content">
+    <div class="breadcrumbs" id="breadcrumbs">
+      <ul class="breadcrumb">
+        <li>
+          <i class="icon-home icon-large"></i>
+          <a href="/diandian"><%= i('html.label.common.home') %><!--主页--></a>
+              <span class="divider">
+                <i class="icon-chevron-right arrow-icon"></i>
+              </span>
+        </li>
+        <li class="active"><%= i('html.label.menu.item') %><!--菜品--></li>
+      </ul><!--.breadcrumb-->
+    </div>
+
+    <div class="page-content">
+      <div class="row tableheader">
+
+        <div class="pull-right">
+          <button id="addFile" type="button" class="btn btn-default">
+            <i class="icon-plus icon-white"></i>
+            <span><%= i('html.button.item.add') %><!--菜品追加--></span>
+          </button>
+
+          <input type="file" id="uploadfile" style="display: none" multiple="multiple" accept=".mp4, .png, .jpg, .jpeg, .jpe, .gif, .bmp" />
+        </div>
+
+        <div class="pull-right" style="width: 300px">
+          <form class="search-form" onsubmit="return false;">
+            <div class="input-group">
+              <input id="txt_search" type="text" placeholder="<%= i('html.label.common.search') %>(<%= i('html.label.item.filename') %>)" class="form-control"  autocomplete="off" />
+                <span id="doSearch" class="input-group-addon">
+                  <i class="icon-search"></i>
+                </span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 一览表示 -->
+      <div id="list" class="row">
+        <div class="col-lg-12">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th><%= i('html.label.item.no') %><!--号码--></th>
+              <th><%= i('html.label.item.image') %><!--预览图--></th>
+              <th><%= i('html.label.item.filename') %><!--菜品名字--></th>
+							<th><%= i('html.label.item.discount') %><!--折扣--></th>
+              <th><%= i('html.label.item.type') %><!--类别--></th>
+              <th><%= i('html.label.item.price') %><!--价格--></th>
+              <th><%= i('html.label.common.updateat') %><!--更新时间--></th>
+              <th><%= i('html.label.common.operation') %><!-- 操作--></th>
+            </tr>
+            </thead>
+            <tbody id="item_list">  </tbody>
+          </table>
+        </div><!--/span-->
+      </div>
+
+      <div class="pagination-area" id="pagination_area"></div>
+
+    </div>
+  </div>
+
+</div><!--/.main-container-->
+
+<!--popup preview-->
+<div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 570px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><%= i('html.label.item.info.preImg') %><!-- item image一覧--></h4>
+      </div>
+      <div class="modal-body" id="preImg"> </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-dismiss="modal"><%= i('html.button.common.close') %><!-- Close--></button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/template" id="tmpl_item_list">
+  <tr>
+    <td>{{index}}</td>
+    <td>
+      <a href="#">
+        <img src="{{cover}}" rowid="{{id}}" class="nav-user-photo" operation="preview" >
+      </a>
+    </td>
+    <td>{{itemName}}</td>
+		<td>{{discount}}</td>
+    <td>{{type}}</td>
+    <td>{{itemPrice}}</td>
+    <td>{{editat}}</td>
+    <td>
+      <a href="#" class="btn btn-default btn-sm" index={{index}} rowId="{{id}}" operation="edit"><%= i('html.button.common.edit') %><!-- 編集--></a>
+      <a href="#" class="btn btn-default btn-sm" index={{index}} rowId="{{id}}" operation="delete"><%= i('html.button.common.delete') %><!--删除--></a>
+      </td>
+  </tr>
+</script>
+
+<script type="text/template" id="tmpl_pre_img" >
+  <img src="{{cover}}" rowid="{{id}}" style="width:500px;" >
+</script>
+
+
+
+</body>
+</html>

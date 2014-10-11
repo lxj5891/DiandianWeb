@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <% include common/required.html %>
+  <link href="/stylesheets/diandian.css" rel="stylesheet" media="screen">
+  <script type="text/javascript" src="/javascripts/menu_item_add.js"></script>
+  <script type="text/javascript" src="/javascripts/common.tag.view.js"></script>
+  <script  type="text/javascript">
+    var i18n = {
+      "js.public.check.item.name":"<%=i('js.public.check.item.name') %>"
+      , "js.common.add.error":"<%=i('js.common.add.error') %>"
+      , "js.common.update.error":"<%=i('js.common.update.error') %>"
+      , "js.common.upload.error":"<%=i('js.common.upload.error') %>"
+      , "js.common.search.error":"<%=i('js.common.search.error') %>"
+      , "js.public.check.item.bigimage":"<%=i('js.public.check.item.bigimage') %>"
+      , "js.public.check.item.smallimage":"<%=i('js.public.check.item.smallimage') %>"
+      , "js.public.check.item.price":"<%=i('js.public.check.item.price') %>"
+    }
+  </script>
+  <style type="text/css">
+
+    /* jQuery Gridly
+     * Copyright 2013 Kevin Sylvestre
+     * 1.2.1
+     */
+    .gridly, .gridly > :not(.dragging) {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+    .gridly .dragging {
+      z-index: 800;
+    }
+    .gridly-wrapper{
+      margin-top: 10px;
+      border: 2px dashed gray;
+    }
+    .gridly {
+      margin-left: 5px;
+      position: relative;
+      height: 40px;
+    }
+
+    .brick,.menu-item{
+      width: 60px;
+      height: 30px;
+      /*background-color: red;*/
+    }
+    .brick{
+      margin-top: 5px;
+      cursor:move;
+      background-color: #e9ee5c;
+    }
+    .brick >span{
+      width: auto;
+      display: table;
+      margin-top: 5px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .menu-item {
+      margin: 5px;
+      cursor: pointer;
+      border: 1px solid gray;
+    }
+
+    .menu-item >span {
+      width: auto;
+      display: table;
+      margin-top: 5px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .selected{
+      background-color: #e9ee5c;
+      border: 0px solid gray;
+    }
+
+  </style>
+
+</head>
+<body>
+
+<% include common/navbar.html %>
+<div class="main-container container-fluid row">
+<% include common/sidebar.html %>
+
+<div class="main-content">
+  <div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+      <li>
+        <i class="icon-home home-icon"></i>
+        <a href="/diandian"><%= i('html.label.common.home') %><!--主页--></a>
+          <span class="divider">
+            <i class="icon-chevron-right arrow-icon"></i>
+          </span>
+      </li>
+      <li>
+        <i class="icon-th icon-large"></i>
+        <a href="/menu/item/list"><%= i('html.label.menu.item') %><!--菜品--></a>
+          <span class="divider">
+            <i class="icon-chevron-right arrow-icon"></i>
+          </span>
+      </li>
+      <li class="active"><%= i('html.label.menu.itemadd') %><!--增加菜品--></li>
+    </ul>
+    <!--.breadcrumb-->
+  </div>
+  <div class="page-content">
+    <!--
+    <div class="row tableheader" style="margin-left: 30px">
+      <div class="pull-right" style="padding-bottom: 5px">
+        <a href="#" class="btn btn-default" id="inputInfo"><i class="icon-font">&nbsp;</i>情報入力</a>
+        <a href="#" class="btn btn-default" id="saveitem"><i class="icon-save">&nbsp;</i>保存</a>
+        <a href="#" class="btn btn-default" id="saveAndApply"><i class="icon-save">&nbsp;</i>保存して申請</a>
+      </div>
+    </div>
+    -->
+    <div class="row tableheader col-lg-8 col-md-12">
+      <div class="pull-left">
+        <h4><%= i('html.label.item.info') %><!--菜品录入--></h4>
+      </div>
+    </div>
+    <div class="row col-lg-8 col-md-12" style="border:solid 0px #e3e3e3;margin-bottom: 30px">
+      <form class="form-horizontal" role="form">
+        <input type="hidden" name="itemId" id="itemId" value=<%=itemId%> >
+        <div class="form-group" style="margin-top: 15px">
+          <label for="itemName" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.title') %><!--菜名--></label>
+          <div class="col-lg-8 col-md-8">
+            <input type="text" name="itemName" class="form-control" id="itemName" placeholder="<%= i('html.label.item.info.title') %>">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px">
+          <label for="searchIndex" class="control-label col-lg-2 col-md-2">快速检索名</label>
+          <div class="col-lg-8 col-md-8">
+            <input type="text" name="searchIndex" class="form-control" id="searchIndex" placeholder="快速检索名">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px">
+          <label for="itemPriceNormal" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.normalprice') %><!--价格--></label>
+          <div class="col-lg-8 col-md-8">
+            <input type="text" name="itemPriceNormal" class="form-control" id="itemPriceNormal" placeholder="<%= i('html.label.item.info.price') %>">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px">
+          <label for="itemPriceHalf" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.halfprice') %><!--价格--></label>
+          <div class="col-lg-8 col-md-8">
+            <input type="text" name="itemPriceHalf" class="form-control" id="itemPriceHalf" placeholder="<%= i('html.label.item.info.price') %>">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px">
+          <label for="itemPriceDiscount" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.Discountprice') %><!--价格--></label>
+          <div class="col-lg-8 col-md-8">
+            <input type="text" name="itemPriceDiscount" class="form-control" id="itemPriceDiscount" placeholder="<%= i('html.label.item.info.price') %>">
+          </div>
+        </div>
+        <!--<div class="form-group" style="margin-top: 15px">-->
+          <!--<label for="uploadfile_s" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.SmaImg') %>&lt;!&ndash;小图&ndash;&gt;</label>-->
+          <!--<div class="col-lg-8 col-md-8">-->
+            <!--&lt;!&ndash;<input type="text" name="itemName" class="form-control" id="itemBigImg" placeholder="<%= i('html.label.item.info.BigImg') %>" style="width: 350px;">&ndash;&gt;-->
+            <!--<input type="file" name="image_s" id="uploadfile_s" style="display: hidden" multiple="multiple" accept=".mp4, .png, .jpg, .jpeg, .jpe, .gif, .bmp" />-->
+            <!--<input type="" id="uploadfile_small" style="display: none"/>-->
+          <!--</div>-->
+          <!--&lt;!&ndash;<button id="uploud_b" class="btn btn-default btn-sm " style="margin-left: -60px;">上传</button>&ndash;&gt;-->
+        <!--</div>-->
+        <div class="form-group" style="margin-top: 15px">
+          <label for="uploadfile_b" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.ItemImg') %><!--大图--></label>
+          <div class="col-lg-8 col-md-8">
+            <!--<input type="text" name="itemName" class="form-control" id="itemSmaImg" placeholder="<%= i('html.label.item.info.SmaImg') %>" style="width: 350px;">-->
+            <img id="small_img" style="display:none;width:96px;height:74px;"/>
+            <input type="file" id="uploadfile_b" style="display: hidden" multiple="multiple" accept=".mp4, .png, .jpg, .jpeg, .jpe, .gif, .bmp" />
+            <input type="" id="uploadfile_big" style="display: none"/>
+          </div>
+          <!--<button id="uploud_s" class="btn btn-default btn-sm " style="margin-left: -60px;">上传</button>-->
+        </div>
+        <div class="form-group" style="margin-top: 15px">
+          <label for="itemType" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.tag') %><!--类型--></label>
+          <div class="col-lg-8 col-md-8">
+            <div id="textBoxTag" class="incrementBox">
+              <input type="text" name="itemType" class="form-control" id="itemType" placeholder="<%= i('html.label.item.info.tag') %>">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="itemComment" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.comment') %><!--描述--></label>
+          <div class="col-lg-8 col-md-8">
+            <textarea class="form-control" name="itemComment" id="itemComment" placeholder="<%= i('html.label.item.info.comment') %>"
+                      rows="4"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="itemMaterial" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.material') %><!--材料--></label>
+          <div class="col-lg-8 col-md-8">
+            <textarea class="form-control" name="itemMaterial" id="itemMaterial" placeholder="<%= i('html.label.item.info.material') %>"
+                      rows="4"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="itemMethod" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.method') %><!--作法--></label>
+          <div class="col-lg-8 col-md-8">
+            <textarea class="form-control" name="itemMethod" id="itemMethod" placeholder="<%= i('html.label.item.info.method') %>"
+                      rows="4"></textarea>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px">
+          <label for="itemOption" class="control-label col-lg-2 col-md-2">备注<!--口味--></label>
+          <div class="col-lg-8 col-md-8">
+            <input type="text" name="itemOption" class="form-control" id="itemOption" placeholder="备注信息 以，分隔">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="printerType" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.printerType') %><!--打印机类型--></label>
+          <div class="col-lg-8 col-md-8">
+            <div id="printerType" class="btn-group" value="1">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="discount" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.discount') %><!-- 折扣--></label>
+          <div class="col-lg-8 col-md-8">
+            <div id="discount" class="btn-group" value="1">
+              <button value="1" class="btn btn-sm btn-default btn-white" type="button"><%= i('html.label.item.info.yes') %><!-- 有折扣--></button>
+              <button value="0" class="btn btn-sm btn-default btn-white"  type="button"><%= i('html.label.item.info.no') %><!-- 无折扣--></button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputType" class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.type') %><!-- 类型--></label>
+          <div class="col-lg-8 col-md-8">
+            <div id="inputType" class="btn-group" value="1">
+              <button value="0" class="btn btn-sm btn-default btn-white" type="button"><%= i('html.label.item.info.food') %><!-- 主食--></button>
+              <button value="1" class="btn btn-sm btn-default btn-white"  type="button"><%= i('html.label.item.info.dish') %><!-- 菜品--></button>
+              <button value="2" class="btn btn-sm btn-default btn-white"  type="button"><%= i('html.label.item.info.drinks') %><!-- 酒水--></button>
+              <button value="3" class="btn btn-sm btn-default btn-white"  type="button"><%= i('html.label.item.info.seafood') %><!-- 海鲜--></button>
+              <button value="10" class="btn btn-sm btn-default btn-white"  type="button"><%= i('html.label.item.info.ad') %><!-- 广告--></button>
+            </div>
+          </div>
+        </div>
+        <!--<div class="form-group">-->
+          <!--<label  class="control-label col-lg-2 col-md-2"><%= i('html.label.item.info.tag') %>&lt;!&ndash;类型&ndash;&gt;</label>-->
+            <!--<div class="col-lg-8 col-md-8">-->
+              <!--<table id="inputpin" value="">-->
+                <!--<tr>-->
+                  <!--<th><div id="NO1" menu-id="NO1" menu-name="NO1" class="menu-item pull-left" value="1" type="checkbox"><span>招牌菜</span></div></th>-->
+                  <!--<th><div id="NO2" menu-id="NO2" menu-name="NO2" class="menu-item pull-left" value="2" type="checkbox"><span>热卖菜</span></div></th>-->
+                  <!--<th><div id="NO3" menu-id="NO3" menu-name="NO3" class="menu-item pull-left" value="3" type="checkbox"><span>新品菜</span></div></th>-->
+                  <!--<th><div id="NO4" menu-id="NO4" menu-name="NO4" class="menu-item pull-left" value="4" type="checkbox"><span>营养菜</span></div></th>-->
+                  <!--<th><div id="NO5" menu-id="NO5" menu-name="NO5" class="menu-item pull-left" value="5" type="checkbox"><span>优惠菜</span></div></th>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                  <!--<td><div style="float: left"> <img width="68px" src="/images/tuijian.png"> </div></td>-->
+                  <!--<td><div style="float: left"> <img width="68px" src="/images/remai.png"> </div></td>-->
+                  <!--<td><div style="float: left"> <img width="68px" src="/images/xinpin.png"> </div></td>-->
+                  <!--<td><div style="float: left"> <img width="68px" src="/images/remai.png"> </div></td>-->
+                  <!--<td><div style="float: left"> <img width="68px" src="/images/cuxiao.png"> </div></td>-->
+                <!--</tr>-->
+              <!--</table>-->
+            <!--</div>-->
+        <!--</div>-->
+
+      </form>
+    </div>
+    <div class="col-lg-8 col-md-12" style="margin-bottom: 30px;padding: 0px;">
+      <div id="saveitem" name="saveitem" class="col-lg-4 col-md-4 btn btn-warning btn-lg">
+        <%= i('html.button.common.save') %><!-- 保存-->
+      </div>
+    </div>
+  </div>
+ </div>
+</div>
+<!--/.main-container-->
+
+<script type="text/template" id="printer_type" >
+  <button value="{{index}}" class="btn btn-sm btn-default btn-white" type="button">{{printerName}}</button>
+</script>
+
+</body>
+</html>
